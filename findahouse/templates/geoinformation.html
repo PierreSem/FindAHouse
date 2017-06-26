@@ -2,10 +2,13 @@
 {% block body %}
 
     <div id="information">
-      <h1>Espace personnel</h1>
-      <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
-    </div>
+<!--	<input id="autocomplete" title="type &quot;a&quot;">-->
 
+   <div class="form-group">
+      <label for="usr">Ville :</label>
+      <input type="text" class="form-control" id="autocomplete">
+    </div>
+    </div>
 
 <div id='map'></div>
 <script>
@@ -23,6 +26,41 @@ $.getJSON("geodata", function(data){
 L.geoJSON(data).addTo(mymap);
 }
 );
+
 </script>
+
+<script>
+
+
+var availableTags = [
+	"ActionScript",
+	"AppleScript",
+	"Asp",
+	"BASIC",
+	"C",
+	"C++",
+	"Clojure",
+	"COBOL",
+	"ColdFusion",
+	"Erlang",
+	"Fortran",
+	"Groovy",
+	"Haskell",
+	"Java",
+	"JavaScript",
+	"Lisp",
+	"Perl",
+	"PHP",
+	"Python",
+	"Ruby",
+	"Scala",
+	"Scheme"
+];
+$( "#autocomplete" ).autocomplete({
+	source: availableTags
+});
+
+</script>
+
 
 {% endblock %}

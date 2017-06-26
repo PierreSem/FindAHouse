@@ -5,12 +5,18 @@ from flask_login import LoginManager, UserMixin, \
                                 login_required, login_user, logout_user 
 from flask_sqlalchemy import SQLAlchemy
 from .gestion_db import Departement, Commune
+import json
 
 db = SQLAlchemy(app)
 
 app.config.update(
     DEBUG = True,
     SECRET_KEY = 'secret_xxx')
+
+
+NAMES=["abc","abcd","abcde","abcdef"]
+
+
 
 
 # flask-login
@@ -47,6 +53,13 @@ def geodata():
     commune = Commune.query.filter_by(numero_insee = '75119').first()
     print(commune)
     return jsonify(commune.limite_commune)
+
+@app.route('/autocomplete', methods=['GET'])
+def autocomplete():
+    search = request.args.get('autocomplete') 
+    print("coucoucoucoucoucou")
+    return Response(json.dumps(NAMES), mimetype='application/json')
+
 
 @app.route('/contact')
 def contact():
