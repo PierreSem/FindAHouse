@@ -5,7 +5,6 @@ from flask_login import LoginManager, UserMixin, \
                                 login_required, login_user, logout_user 
 from flask_sqlalchemy import SQLAlchemy
 from .gestion_db import Departement, Commune
-import json
 
 db = SQLAlchemy(app)
 
@@ -58,7 +57,7 @@ def geodata():
 def autocomplete():
     search = request.args.get('autocomplete') 
     print("coucoucoucoucoucou")
-    return Response(json.dumps(NAMES), mimetype='application/json')
+    return jsonify(NAMES) 
 
 
 @app.route('/contact')

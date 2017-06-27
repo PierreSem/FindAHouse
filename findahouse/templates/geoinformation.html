@@ -6,7 +6,7 @@
 
    <div class="form-group">
       <label for="usr">Ville :</label>
-      <input type="text" class="form-control" id="autocomplete">
+      <input type="text" class="form-control" id="recherche">
     </div>
     </div>
 
@@ -31,34 +31,12 @@ L.geoJSON(data).addTo(mymap);
 
 <script>
 
-
-var availableTags = [
-	"ActionScript",
-	"AppleScript",
-	"Asp",
-	"BASIC",
-	"C",
-	"C++",
-	"Clojure",
-	"COBOL",
-	"ColdFusion",
-	"Erlang",
-	"Fortran",
-	"Groovy",
-	"Haskell",
-	"Java",
-	"JavaScript",
-	"Lisp",
-	"Perl",
-	"PHP",
-	"Python",
-	"Ruby",
-	"Scala",
-	"Scheme"
-];
-$( "#autocomplete" ).autocomplete({
-	source: availableTags
+$('#recherche').autocomplete({
+    source : 'autocomplete'
 });
+
+
+
 
 </script>
 
