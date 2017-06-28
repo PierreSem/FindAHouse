@@ -55,9 +55,19 @@ def geodata():
 
 @app.route('/autocomplete', methods=['GET'])
 def autocomplete():
-    search = request.args.get('autocomplete') 
-    print("coucoucoucoucoucou")
-    return jsonify(NAMES) 
+    search = request.args.get('term') 
+    search = '%' + search + '%'
+    print(search)
+    commune = Commune.query.filter(Commune.nom_commune.ilike(search))
+    print(commune.first())
+    nom_commune = []
+    if commune.first() != None:
+        tmp = 0
+        for i in commune:
+            nom_commune.append(i.nom_commune)
+            tmp = tmp + 1
+            if tmp == 10: break
+    return jsonify(nom_commune) 
 
 
 @app.route('/contact')
