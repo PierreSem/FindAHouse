@@ -68,6 +68,12 @@ def autocomplete():
             if tmp == 10: break
     return jsonify(nom_commune) 
 
+@app.route('/recuperation_ville', methods=['POST'])
+def recuperation_ville():
+    ville = request.form["search_ville"]
+    print(ville)
+
+
 
 @app.route('/contact')
 def contact():
