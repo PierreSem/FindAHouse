@@ -3,12 +3,21 @@
 
     <div id="information">
 <!--	<input id="autocomplete" title="type &quot;a&quot;">-->
-
+<form class="form-horizontal">
    <div class="form-group">
-      <label for="usr">Ville :</label>
+      <label for="ville_label" class="col-sm-2 control-label"> Ville : </label>
+      <div class="col-sm-8">
       <input type="text" class="form-control" id="recherche_ville">
+      </div>
     </div>
     </div>
+
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-default">Rechercher</button>
+    </div>
+  </div>
+</form>
 
 <div id='map'></div>
 
@@ -30,7 +39,8 @@ L.geoJSON(data).addTo(mymap);
 
 
 $('#recherche_ville').autocomplete({
-    source : 'autocomplete'
+    source : 'autocomplete',
+    minLength: 3
 });
 </script>
 

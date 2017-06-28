@@ -59,7 +59,6 @@ def autocomplete():
     search = '%' + search + '%'
     print(search)
     commune = Commune.query.filter(Commune.nom_commune.ilike(search))
-    print(commune.first())
     nom_commune = []
     if commune.first() != None:
         tmp = 0
