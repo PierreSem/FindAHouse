@@ -12,17 +12,10 @@ app.config.update(
     DEBUG = True,
     SECRET_KEY = 'secret_xxx')
 
-
-NAMES=["abc","abcd","abcde","abcdef"]
-
-
-
-
 # flask-login
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "identification"
-
 
 # silly user model
 class User(UserMixin):
@@ -45,11 +38,11 @@ def active_page(page):
     html_page[page] = ' class=active'
     return html_page
 
-@app.route('/geodata')
-def geodata():
+@app.route('/geodata/<ville>')
+def geodata(ville):
     #departement = Departement.query.filter_by(numero_departement = '2A').first()
     #return jsonify(departement.limite_departement)
-    commune = Commune.query.filter_by(numero_insee = '75119').first()
+    commune = Commune.query.filter_by(nom_commune = ville).first()
     print(commune)
     return jsonify(commune.limite_commune)
 
@@ -68,22 +61,22 @@ def autocomplete():
             if tmp == 10: break
     return jsonify(nom_commune) 
 
-@app.route('/recuperation_ville', methods=['POST'])
-def recuperation_ville():
-    ville = request.form["search_ville"]
-    print(ville)
-
-
-
 @app.route('/contact')
 def contact():
     g.active_page = active_page('contact')
     return render_template('contact.html')
 
-@app.route('/geoinformation')
+@app.route('/geoinformation', methods=['GET', 'POST'])
 def geoinformation():
-    g.active_page = active_page('geoinformation')
-    return render_template('geoinformation.html')
+    if request.method == "GET":
+        g.active_page = active_page('geoinformation')
+        g.ville = 'DOMONT'
+        return render_template('geoinformation.html')
+    elif request.method == "POST":
+        g.active_page = active_page('geoinformation')
+        ville = request.form["search_ville"]
+        g.ville = ville
+        return render_template('geoinformation.html')
 
 @app.route('/inscription')
 def inscription():
