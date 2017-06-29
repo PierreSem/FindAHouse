@@ -70,8 +70,8 @@ def contact():
 def geoinformation():
     if request.method == "GET":
         g.active_page = active_page('geoinformation')
-        g.ville = 'DOMONT'
-        return render_template('geoinformation.html')
+        ville = 'DOMONT'
+        return render_template('geoinformation.html', ville = ville)
     elif request.method == "POST":
         g.active_page = active_page('geoinformation')
         ville = request.form["search_ville"]
