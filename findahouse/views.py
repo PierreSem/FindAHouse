@@ -75,8 +75,7 @@ def geoinformation():
     elif request.method == "POST":
         g.active_page = active_page('geoinformation')
         ville = request.form["search_ville"]
-        g.ville = ville
-        return render_template('geoinformation.html')
+        return render_template('geoinformation.html', ville = ville)
 
 @app.route('/inscription')
 def inscription():

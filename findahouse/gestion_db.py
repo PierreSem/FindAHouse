@@ -56,6 +56,7 @@ def creer_commune_json(info, limite):
     commune_json["properties"] = {"numero_commune": info[2],\
         "nom_departement": info[14], "numero_departement": info[13]}
     commune_json["geometry"] = {"type": "Polygon", "coordinates":  limite}
+
     return commune_json
 
 def extraction_shp_departement(chemin):
@@ -94,8 +95,10 @@ def extraction_shp_commune(chemin):
         info = dep.record
         limite = conversion_lambert93_wgs84(dep.shape.points)
         commune_json = creer_commune_json(info, limite)
+        lon_tmp, lat_tmp =  transform(lambert_93, wgs_84, info[7], info[8])
         info_commune.append([info[2], info[3], info[4], info[9], info[10],\
-                             info[11], info[13], commune_json])
+                             info[11], lon_tmp, lat_tmp, info[13],\
+                             commune_json])
     return info_commune
 
 class Departement(db.Model):
@@ -130,6 +133,8 @@ class Commune(db.Model):
     altitude_moyenne : altitude moyenne en metres
     superficie : superficie en hectares
     population : population
+    x_centroid : lat centre de la commune
+    y_centroid : lon centre de la commune
     numero_departement : numero_departement
     limite_commune : limite commune en coordonnee wgs84'''
     numero_insee =  db.Column(db.String(5), primary_key=True)
@@ -138,11 +143,14 @@ class Commune(db.Model):
     altitude_moyenne = db.Column(db.Integer)
     superficie = db.Column(db.Integer)
     population = db.Column(db.Integer)
+    x_centroid = db.Column(db.Float)
+    y_centroid = db.Column(db.Float)
     numero_departement = db.Column(db.String(3))
     limite_commune = db.Column(db.JSON)
 
     def __init__(self, numero_insee, nom_commune, status, altitude_moyenne,\
-                 superficie, population, numero_departement, limite_commune):
+                 superficie, population, x_centroid, y_centroid,\
+                 numero_departement, limite_commune):
         self.numero_insee = numero_insee
         self.nom_commune = nom_commune
         status = str(status)
@@ -158,6 +166,8 @@ class Commune(db.Model):
         self.altitude_moyenne = altitude_moyenne
         self.superficie = superficie
         self.population = population
+        self.x_centroid = x_centroid
+        self.y_centroid = y_centroid
         self.numero_departement = numero_departement
         self.limite_commune = limite_commune
 
@@ -185,7 +195,8 @@ if __name__ == '__main__':
     for com_tmp in communes:
         tmp = tmp + 1
         ligne = Commune(com_tmp[0], com_tmp[1], com_tmp[2], com_tmp[3],\
-                        com_tmp[4], com_tmp[5], com_tmp[6], com_tmp[7])
+                        com_tmp[4], com_tmp[5], com_tmp[6], com_tmp[7],\
+                        com_tmp[8], com_tmp[9])
         #print ligne
         if CHG_DB == True : 
             db.session.add(ligne)
