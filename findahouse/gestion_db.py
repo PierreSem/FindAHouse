@@ -50,11 +50,12 @@ def creer_departement_json(info, limite):
     departement_json["geometry"] = {"type": "Polygon", "coordinates":  limite}
     return departement_json
 
-def creer_commune_json(info, limite):
+def creer_commune_json(info, limite, coord_centr):
     commune_json = {}
     commune_json["type"] = "Feature"
     commune_json["properties"] = {"numero_commune": info[2],\
-        "nom_departement": info[14], "numero_departement": info[13]}
+        "nom_departement": info[14], "numero_departement": info[13],\
+        "coordonnee_centroid" : coord_centr}
     commune_json["geometry"] = {"type": "Polygon", "coordinates":  limite}
 
     return commune_json
@@ -93,9 +94,10 @@ def extraction_shp_commune(chemin):
     info_commune = []
     for dep in shapeRecs:
         info = dep.record
-        limite = conversion_lambert93_wgs84(dep.shape.points)
-        commune_json = creer_commune_json(info, limite)
         lon_tmp, lat_tmp =  transform(lambert_93, wgs_84, info[7], info[8])
+        coord_centr = [lat_tmp, lon_tmp]
+        limite = conversion_lambert93_wgs84(dep.shape.points)
+        commune_json = creer_commune_json(info, limite, coord_centr)
         info_commune.append([info[2], info[3], info[4], info[9], info[10],\
                              info[11], lon_tmp, lat_tmp, info[13],\
                              commune_json])

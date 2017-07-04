@@ -28,7 +28,7 @@ var mymap = L.map('map').setView([45, 2], 5);
 //L.geoJSON(states, {style:myStyle}).addTo(mymap);
 $.getJSON("geodata/{{ville}}", function(data){
 L.geoJSON(data).addTo(mymap);
-mymap.setView([47, 2], 7);
+mymap.setView(data.properties.coordonnee_centroid, 10);
 }
 );
 
