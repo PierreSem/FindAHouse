@@ -8,25 +8,6 @@ from .gestion_db import Departement, Commune
 
 db = SQLAlchemy(app)
 
-app.config.update(
-    DEBUG = True,
-    SECRET_KEY = 'secret_xxx')
-
-# flask-login
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = "identification"
-
-# silly user model
-class User(UserMixin):
-    def __init__(self, id):
-        self.id = id
-        self.name = str(id)
-        self.password =  str(id)
-        
-    def __repr__(self):
-        return "%d/%s/%s" % (self.id, self.name, self.password)
-
 
 # create some users with ids 1 to 20       
 #users = User('pierre') 
@@ -56,7 +37,8 @@ def autocomplete():
     if commune.first() != None:
         tmp = 0
         for i in commune:
-            nom_commune.append(i.nom_commune)
+            #nom_commune.append(i.nom_commune)
+            nom_commune.append({"value" : i.nom_commune, "label" : i.nom_commune, "desc": "coucou"})
             tmp = tmp + 1
             if tmp == 10: break
     return jsonify(nom_commune) 
@@ -70,67 +52,9 @@ def contact():
 def geoinformation():
     if request.method == "GET":
         g.active_page = active_page('geoinformation')
-        ville = 'DOMONT'
+        ville = ''
         return render_template('geoinformation.html', ville = ville)
     elif request.method == "POST":
         g.active_page = active_page('geoinformation')
         ville = request.form["search_ville"]
         return render_template('geoinformation.html', ville = ville)
-
-@app.route('/inscription')
-def inscription():
-    g.active_page = active_page('inscription')
-    return render_template('inscription.html')
-
-
-@app.route('/espace_personnel')
-@login_required
-def espace_personnel():
-    g.active_page = active_page('espace_personnel')
-    return render_template('espace_personnel.html')
- 
-# somewhere to login
-@app.route("/identification", methods=["GET", "POST"])
-def identification():
-    g.active_page = active_page('identification')
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']        
-        if password == 'pierre':
-            user = User(id)
-            login_user(user)
-            return redirect(request.args.get("next") or url_for('geoinformation'))
-        else:
-            return abort(401)
-    else:
-        return render_template('identification.html')
-        #return Response('''
-        #<form action="" method="post">
-        #    <p><input type=text name=username>
-        #    <p><input type=password name=password>
-        #    <p><input type=submit value=Login>
-        #</form>
-        #''')
-
-
-# somewhere to logout
-@app.route("/logout")
-@login_required
-def logout():
-    logout_user()
-    return Response('<p>Logged out</p>')
-
-
-# handle login failed
-@app.errorhandler(401)
-def page_not_found(e):
-    return Response('<p>Login failed</p>')
-    
-    
-# callback to reload the user object        
-@login_manager.user_loader
-def load_user(userid):
-    return User(userid)
- 
-
-
