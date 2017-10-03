@@ -1,59 +1,49 @@
 {% extends "layout.html" %}
 {% block body %}
-
+<!--<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>jQuery UI Autocomplete - Custom data and display</title>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <style>
+  </style>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>-->
+  <script>
+  $( function() {
+    $( "#project" ).autocomplete({
+      minLength: 3,
+      source: "autocomplete",
+      focus: function( event, ui ) {
+        $( "#project" ).val( ui.item.label );
+        return false;
+      },
+      select: function( event, ui ) {
+        $( "#project" ).val( ui.item.label );
+        $( "#project-id" ).val( ui.item.value );
+        $( "#project-description" ).html( ui.item.desc );
+        return false;
+      }
+    })
+    .autocomplete( "instance" )._renderItem = function( ul, item ) {
+      return $( "<li>" )
+        .append( "<div>" + item.label + "<br>" + item.desc + "</div>" )
+        .appendTo( ul );
+    };
+  } );
+  </script>
+</head>
+<body>
+ 
 <div id="information">
-
-
-<form class="form-horizontal" method="post">
-    <div class="col-xs-10"> 
-      <input type="text" class="form-control" id="recherche_ville" placeholder="Ville" name = search_ville>
-    </div>
-      <button class="btn btn-default" type="submit">Rechercher</button>
-    </div>
-  </div>
-</form>
-
-</div>
-
-<div id='map'></div>
-
-<script>
-var mymap = L.map('map').setView([46.6, 2], 6);
-    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoib2RhYm9wcm9qZWN0IiwiYSI6ImNpeWJ5ZWpmdjAwNTgzM3FwYnR0Yno2MmoifQ.8pNGoOmtAZ330L22u-1gcw',
-    {
-        maxZoom: 18,
-        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-                  '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' + 
-                  'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-        id: 'mapbox.streets'
-    }).addTo(mymap);
-//L.geoJSON(states, {style:myStyle}).addTo(mymap);
-$.getJSON("geodata/{{ville}}", function(data){
-L.geoJSON(data).addTo(mymap);
-mymap.setView(data.properties.coordonnee_centroid, 11);
-}
-);
-
-
-$('#recherche_ville').autocomplete({
-  source : 'autocomplete',
-  minLength: 3,
-  select: function(event, ui)
-    {console.log("coucou");
-     console.log("coucou" + ui.item.value);
-     $.getJSON("geodata/" + ui.item.label, function(data){
-     L.geoJSON(data).addTo(mymap);
-     mymap.setView(data.properties.coordonnee_centroid, 11);});}
-  }).autocomplete("instance")._renderItem = function(ul, item){
-   return $("<li>")
-     .append("<div>" + item.label + "</div>")
-     .appendTo(ul);};
-
-
-
-
-
-</script>
-
-
+<div id="project-label">Select a project (type "j" for a start):</div>
+<input id="project">
+<input type="hidden" id="project-id">
+<p id="project-description"></p>
+</div> 
+ 
+</body>
 {% endblock %}

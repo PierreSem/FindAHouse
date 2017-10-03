@@ -1,0 +1,5 @@
+Base de donnée des codes postaux :
+https://datanova.legroupe.laposte.fr/page/accueil/
+
+Base de donnees des nom accentues des communes
+http://sql.sh/736-base-donnees-villes-francaises

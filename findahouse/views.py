@@ -3,14 +3,22 @@ from flask import session, g, escape, redirect, url_for, render_template,\
                                 request, Flask, Response, abort, jsonify
 from flask_login import LoginManager, UserMixin, \
                                 login_required, login_user, logout_user 
-from flask_sqlalchemy import SQLAlchemy
-from .gestion_db import Departement, Commune
-
-db = SQLAlchemy(app)
-
-
+import mysql.connector
 # create some users with ids 1 to 20       
 #users = User('pierre') 
+
+
+CONFIG = {'user': 'tipi',
+          'password': 'tipi'}
+
+DB_NAME = "geodata"
+
+
+def connexion_db(DB_NAME):
+    cnx = mysql.connector.connect(**CONFIG)
+    cursor = cnx.cursor()
+    cnx.database = DB_NAME
+    return cnx, cursor
 
 
 def active_page(page):
@@ -27,18 +35,25 @@ def geodata(ville):
     print(commune)
     return jsonify(commune.limite_commune)
 
-@app.route('/autocomplete', methods=['GET'])
+
+@app.route('/autocomplete')
 def autocomplete():
     search = request.args.get('term') 
     search = '%' + search + '%'
     print(search)
+    cnx, cursor = connexion_db(DB_NAME)
+    query = ('SELECT * FROM communes WHERE nom_com_maj = "ANTONY";')
+    cursor.execute(query)
+    for i in cursor:
+        print(i)
+    print(cursor)
     commune = Commune.query.filter(Commune.nom_commune.ilike(search))
     nom_commune = []
     if commune.first() != None:
         tmp = 0
         for i in commune:
             #nom_commune.append(i.nom_commune)
-            nom_commune.append({"value" : i.nom_commune, "label" : i.nom_commune, "desc": "coucou"})
+            nom_commune.append({"value" : i.nom_commune, "label" : i.nom_commune, "desc": i.numero_departement})
             tmp = tmp + 1
             if tmp == 10: break
     return jsonify(nom_commune) 
@@ -53,8 +68,8 @@ def geoinformation():
     if request.method == "GET":
         g.active_page = active_page('geoinformation')
         ville = ''
-        return render_template('geoinformation.html', ville = ville)
+        return render_template('geoinformation_old.html', ville = ville)
     elif request.method == "POST":
         g.active_page = active_page('geoinformation')
         ville = request.form["search_ville"]
-        return render_template('geoinformation.html', ville = ville)
+        return render_template('geoinformation_old.html', ville = ville)
